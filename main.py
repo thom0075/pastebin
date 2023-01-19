@@ -1,5 +1,6 @@
 import requests
 
+
 # create basic UI
 # (1) the program must fetch user information
 # (2) dedicated window to paste content
@@ -10,26 +11,33 @@ import requests
 # (4) send the fetched data via e-mail
 
 # API user log-in data
-api_dev_key = str()
-api_user_name = str()
-api_user_password = str()
-api_user_key = str()
-
-d = {"api_dev_key": api_dev_key, "api_user_name": api_user_name, "api_user_password": api_user_password}
-
 
 class User():
     def __init__(self):
-        pass
+        self.api_dev_key = str()
+        self.api_user_name = str()
+        self.api_user_password = str()
+        self.api_user_key = str()
+        self.paste_url = r"https://pastebin.com/api/api_post.php"
+        self.login_url = r"https://pastebin.com/api/api_login.php"
+        self.d = {"api_dev_key": self.api_dev_key, "api_user_name": self.api_user_name,
+                  "api_user_password": self.api_user_password}
 
+    # This method gets the user key from the API
     def get_user_key(self, dev_key, user_name, user_pw):
         try:
             d = {'api_dev_key': f"{dev_key}", 'api_user_name': f"{user_name}", 'api_user_password': f"{user_pw}"}
-            request = requests.post("https://pastebin.com/api/api_login.php", d)
+            request = requests.post(f"{self.login_url}", d)
             print(f"[i] {request.status_code}")
             return request.text
         except Exception as E:
             print(f"[X] {E}\t Try again")
 
+    # This method retrieves user information based on the api_option given by the user
+    # TODO check if the api_option is valid
+    def get_user_details(self, api_option):
+        userinfo = {"api_option": f"{api_option}", "api_user_key": f"{self.api_user_key}",
+                    "api_dev_key": f"{self.api_dev_key}"}
+        return requests.post(self.paste_url, userinfo)
 
-request = requests.post("https://pastebin.com/api/api_login.php", d)
+# request = requests.post("https://pastebin.com/api/api_login.php", d)
